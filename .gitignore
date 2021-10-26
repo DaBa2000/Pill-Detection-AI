@@ -58,6 +58,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+UnityProjects/PillDetection/Assets/AgoraEngine/Plugins/iOS/AgoraRtcKit.framework/AgoraRtcKit
+
 # =============== #
 # Unity generated #
 # =============== #
