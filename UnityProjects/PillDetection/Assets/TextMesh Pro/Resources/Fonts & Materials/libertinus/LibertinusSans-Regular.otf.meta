@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 4a4f83c418d3b4f349c7414c582ff2c2
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Libertinus Sans
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c30e8f595a8314358ba556a4399ccb3c, type: 3}
+  - {fileID: 12800000, guid: 269a65b45882e487c93b6f1f47923eda, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
