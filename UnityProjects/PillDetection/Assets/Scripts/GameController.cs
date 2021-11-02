@@ -1,29 +1,30 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameController : MonoBehaviour
 {
+    // pill taht should be detected
     private static int detect_pill = 0;
+    // agora id connection client and caregiver
     private static string agora_id;
-
+    // coordinates for placement indicator
     public static float marker_y = 0;
     public static float marker_x = 0;
-
+    // coordinates for arrow
     public static float arrow_y = 0;
     public static float arrow_x = 0;
-
+    // text size of apps
     public static float textSize = 1;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        // find all instances of text
         var textComponents = FindObjectsOfType<TextMeshProUGUI>();
 
+        // for each text, scale the text to the selected size
         foreach (TextMeshProUGUI cmp in textComponents)
         {
             if (cmp.gameObject.tag != "Title")
@@ -35,24 +36,30 @@ public class GameController : MonoBehaviour
         GameController.SetAgoraID(PlayerPrefs.GetString("agoraID"));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// Opens a new scene
+    /// </summary>
+    /// <param name="scene_name">next scene</param>
     public static void OpenScene(string scene_name)
     {
         Resources.UnloadUnusedAssets();
         SceneManager.LoadScene(scene_name);
     }
 
+    /// <summary>
+    /// set pill to be detected
+    /// </summary>
+    /// <param name="pill">id of pill to be detected</param>
     public static void SetDetectedPill(int pill)
     {
         detect_pill = pill;
         OpenScene("KI");
     }
 
+    /// <summary>
+    /// Quit KI scene in between two detections
+    /// </summary>
+    /// <param name="nextScene">next scene to be opened</param>
     public static void ReturnFromKI(string nextScene)
     {
         FindObjectOfType<ImageDetection>().quitScene(nextScene);

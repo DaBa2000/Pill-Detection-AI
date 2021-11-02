@@ -3,36 +3,72 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Audio;
 using TMPro;
 using UnityEngine.XR.ARFoundation;
 
 public class Companion : MonoBehaviour
 {
+    // animate 2d companion blinking
     public Animator animator;
+    // Play sounds when clicking companion
     public SoundManagement sm;
 
     // Start is called before the first frame update
     void Start()
     {
+        // if  no AR scene is open, start 2D animation
         if (SceneManager.GetActiveScene().name != "KI" && SceneManager.GetActiveScene().name != "AR")
         {
             StartCoroutine(Blink());
         } else
+        // if AR scnene is open, start companion replacement every 30s
         {
             StartCoroutine(ReplaceCompanion());
         }
 
         sm = FindObjectOfType<SoundManagement>();
 
+        // if tutorial has not been played, start tutorial
         if (PlayerPrefs.GetInt("tutorial") == 0)
         {
             StartCoroutine(startTutorial());
         }
     }
 
+    /// <summary>
+    /// Replace Companion every 30 seconds, so that it doesnt get lost when moving phone
+    /// </summary>
+    private IEnumerator ReplaceCompanion()
+    {
+        yield return new WaitForSeconds(3);
+        placeCompanion();
+
+        while (true)
+        {
+            yield return new WaitForSeconds(30);
+            placeCompanion();
+        }
+    }
+
+    /// <summary>
+    /// Start blinking animation in random intervals
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator Blink()
+    {
+        while (true)
+        {
+            animator.SetTrigger("comp_blink");
+            yield return new WaitForSecondsRealtime(Random.Range(1, 7));
+        }
+    }
+
+    /// <summary>
+    /// Control Tutorial
+    /// </summary>
     IEnumerator startTutorial()
     {
+        // Check which scene is opened and start fitting part of tutorial
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
             TextMeshProUGUI text_tutorial = GameObject.Find("TutorialText").GetComponent<TextMeshProUGUI>();
@@ -90,46 +126,22 @@ public class Companion : MonoBehaviour
         }
     }
 
-    private IEnumerator ReplaceCompanion()
-    {
-        yield return new WaitForSeconds(3);
-        placeCompanion();
-
-        while (true)
-        {
-            yield return new WaitForSeconds(30);
-            placeCompanion();
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    private IEnumerator Blink()
-    {
-        while (true)
-        {
-            animator.SetTrigger("comp_blink");
-            yield return new WaitForSecondsRealtime(Random.Range(1, 7));
-        }
-    }
-
+    /// <summary>
+    /// Detect click on companion and start scene explaination
+    /// </summary>
     void OnMouseDown()
     {
         if (SceneManager.GetActiveScene().name != "KI" && SceneManager.GetActiveScene().name != "AR")
         {
             animator.SetTrigger("comp_click");
-        } else
-        {
-
         }
                 
         StartSceneExplaination();
     }
 
+    /// <summary>
+    /// Decide which explaination to start based on scene
+    /// </summary>
     void StartSceneExplaination()
     {
         if (SceneManager.GetActiveScene().name == "MainMenu")
@@ -154,6 +166,9 @@ public class Companion : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Tutorial for settings page
+    /// </summary>
     IEnumerator TutorialSettings()
     {
         GameObject button_MainMenu = GameObject.Find("Home");
@@ -221,6 +236,9 @@ public class Companion : MonoBehaviour
         yield return new WaitForSeconds(2);
     }
 
+    /// <summary>
+    /// Tutorial for AR page
+    /// </summary>
     IEnumerator TutorialAR()
     {
         GameObject button_MainMenu = GameObject.Find("Home");
@@ -260,6 +278,9 @@ public class Companion : MonoBehaviour
         text_panel.SetActive(false);
     }
 
+    /// <summary>
+    /// Tutorial for KI page
+    /// </summary>
     IEnumerator TutorialKI()
     {
         GameObject button_MainMenu = GameObject.Find("Home");
@@ -312,6 +333,9 @@ public class Companion : MonoBehaviour
         text_panel.SetActive(false);
     }
 
+    /// <summary>
+    /// Tutorial for select pill page
+    /// </summary>
     IEnumerator TutorialSelectPill()
     {
         GameObject button_MainMenu = GameObject.Find("Home");
@@ -369,6 +393,9 @@ public class Companion : MonoBehaviour
         yield return new WaitForSeconds(3);
     }
 
+    /// <summary>
+    /// Tutorial for main menu
+    /// </summary>
     IEnumerator TutorialMainMenu()
     {
         GameObject button_start = GameObject.Find("Start");
@@ -397,12 +424,17 @@ public class Companion : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Highlight component
+    /// </summary>
+    /// <param name="obj">object to be highlighted</param>
     private IEnumerator HiglightComponent(GameObject obj)
     {
+        // change color to red
         Color oldColor = obj.GetComponent<Image>().color;
         obj.GetComponent<Image>().color = Color.red;
 
+        // let object slowly increase in size
         for (int i = 0; i < 10; i++)
         {
             obj.transform.localScale = Vector3.Lerp(new Vector3(1, 1, 1), new Vector3(1.1f, 1.1f, 1.1f), i / 10.0f);
@@ -411,34 +443,33 @@ public class Companion : MonoBehaviour
 
         yield return new WaitForSeconds(0.1f);
 
+        // let object slowly decrease in size
         for (int i = 10; i > 0; i--)
         {
             obj.transform.localScale = Vector3.Lerp(new Vector3(1, 1, 1), new Vector3(1.1f, 1.1f, 1.1f), i / 10.0f);
             yield return new WaitForSeconds(0.01f);
         }
 
+        // reset old color ob component
         obj.GetComponent<Image>().color = oldColor;
     }
 
+    /// <summary>
+    /// Place component in the scene
+    /// </summary>
     private void placeCompanion()
     {
-        Debug.Log("Startup");
-        Debug.Log(Camera.current);
-        Debug.Log(Screen.width);
-
+        // cast ray into the scene
         Vector3 raycastOrigin = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f, 0));
-
         List<ARRaycastHit> hits = new List<ARRaycastHit>();
         ARRaycastManager rcManager = GameObject.Find("AR Session Origin").GetComponent<ARRaycastManager>();
-
         rcManager.Raycast(raycastOrigin, hits, UnityEngine.XR.ARSubsystems.TrackableType.Planes);
 
+        // place companion at first hit
         if (hits.Count > 0)
         {
             Pose placementPose = hits[0].pose;
             GameObject.Find("Companion").transform.SetPositionAndRotation(placementPose.position, placementPose.rotation);
         }
-
-        Debug.Log("HIIIITS " + hits.Count);
     }
 }

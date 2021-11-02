@@ -1,11 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using agora_gaming_rtc;
-using UnityEngine.UI;
-using System.Globalization;
 using System.Runtime.InteropServices;
-using System;
+
 public class ShareScreen : MonoBehaviour
 {
     Texture2D mTexture;
@@ -15,8 +12,6 @@ public class ShareScreen : MonoBehaviour
     private string channelName;
     public IRtcEngine mRtcEngine;
     int i = 100;
-
-    int frameCount = 0;
 
     void Start()
     {
@@ -42,11 +37,6 @@ public class ShareScreen : MonoBehaviour
         mTexture = new Texture2D((int)mRect.width, (int)mRect.height, TextureFormat.BGRA32, false);
 
         StartCoroutine("shareScreen");
-    }
-
-    void Update()
-    {
-        
     }
 
     //Screen Share
