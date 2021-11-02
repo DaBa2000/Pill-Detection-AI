@@ -14,23 +14,24 @@ public class CreateUser : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // create random user id
         userID = "" + (int) Random.Range(0, 9999);
+        // show userid on screen
         id_panel.GetComponent<TextMeshProUGUI>().SetText("ID: " + userID);
 
         num_users = PlayerPrefs.GetInt("num_users");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    
-    }
-
+    /// <summary>
+    /// Add user to streaming
+    /// </summary>
     public void addUser()
     {
+        // set new number of users
         num_users++;
         PlayerPrefs.SetInt("num_users", num_users);
 
+        // save new user
         PlayerPrefs.SetString("userid" + num_users, userID);
         PlayerPrefs.SetString("username" + num_users, name_input.text);
     }
