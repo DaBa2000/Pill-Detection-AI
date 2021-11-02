@@ -5,32 +5,33 @@ using UnityEngine;
 
 public class Messaging : MonoBehaviour
 {
-
+    // Event handlers
     RtmClientEventHandler clientEventHandler;
     RtmChannelEventHandler channelEventHandler;
-    RtmCallEventHandler callEventHandler;
 
+    // chat client
     RtmClient rtmClient;
+    RtmChannel channel;
 
+    // app id and toke, connection app to agora project
     string appId = "41ad377e7f2d4700b2f72bba1660f421";
     string token = "";
 
-    RtmChannel channel;
     string UserName;
-
     bool joined = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        // set event handlers
         clientEventHandler = new RtmClientEventHandler();
         channelEventHandler = new RtmChannelEventHandler();
-        callEventHandler = new RtmCallEventHandler();
-
-        rtmClient = new RtmClient(appId, clientEventHandler);
-
         channelEventHandler.OnMessageReceived = OnChannelMessageReceivedHandler;
 
+        // create new client based on appid
+        rtmClient = new RtmClient(appId, clientEventHandler);
+        
+        // login to chanel
         Login();
     }
 
@@ -59,6 +60,9 @@ public class Messaging : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Login to text channels
+    /// </summary>
     public void Login()
     {
         UserName = GameController.GetAgoraID() + "view";
@@ -72,11 +76,17 @@ public class Messaging : MonoBehaviour
         rtmClient.Login(token, UserName);
     }
 
+    /// <summary>
+    /// Logout of text channel
+    /// </summary>
     public void Logout()
     {
         rtmClient.Logout();
     }
 
+    /// <summary>
+    /// join certain text channel
+    /// </summary>
     public void JoinChannel()
     {
         string ChannelName = GameController.GetAgoraID() + "txt";
@@ -86,16 +96,29 @@ public class Messaging : MonoBehaviour
         Debug.Log("Joined Channel " + ChannelName);
     }
 
+    /// <summary>
+    /// leave certain text channel
+    /// </summary>
     public void LeaveChannel()
     {
         channel.Leave();
     }
 
+    /// <summary>
+    /// send message to text channel
+    /// </summary>
+    /// <param name="message">message to send</param>
     public void SendMessageToChannel(string message)
     {
         channel.SendMessage(rtmClient.CreateMessage(message));
     }
 
+    /// <summary>
+    /// handle message when recieven from other user
+    /// </summary>
+    /// <param name="id">id of messsage</param>
+    /// <param name="userId">user id of message sender</param>
+    /// <param name="message">message content</param>
     void OnChannelMessageReceivedHandler(int id, string userId, TextMessage message)
     {
         string coord = message.GetText();

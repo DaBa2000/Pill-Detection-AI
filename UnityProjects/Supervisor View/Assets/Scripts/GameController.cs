@@ -6,20 +6,13 @@ using TMPro;
 
 public class GameController : MonoBehaviour
 {
+    // Agora streaming ID 
     private static string agora_id;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// Open scene by name
+    /// </summary>
+    /// <param name="name">name of scene</param>
     public static void OpenScene(string name)
     {
         SceneManager.LoadScene(name);
@@ -35,6 +28,7 @@ public class GameController : MonoBehaviour
         return agora_id;
     }
 
+    // select which agora id to connect to via buttons
     public static void SetID(Button button)
     {
         Button[] objects = GameObject.FindObjectsOfType<Button>();
